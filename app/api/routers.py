@@ -4,13 +4,13 @@ import shutil
 from fastapi import APIRouter, Depends, HTTPException, Path, Form, UploadFile
 from typing import List
 
-from src.api.dto import TeacherBase, TeacherResponse, TagResponse, TagBase, ArticleResponse, ArticleBase, \
+from app.api.dto import TeacherBase, TeacherResponse, TagResponse, TagBase, ArticleResponse, ArticleBase, \
     ArticleLatestResponse
-from src.config.config import settings
-from src.providers import get_teacher_service, get_tag_service, get_article_service
-from src.service.article_service import ArticleService
-from src.service.tag_service import TagService
-from src.service.teacher_service import TeacherService
+from app.config.config import settings
+from app.providers import get_teacher_service, get_tag_service, get_article_service
+from app.service.article_service import ArticleService
+from app.service.tag_service import TagService
+from app.service.teacher_service import TeacherService
 
 teachers_router = APIRouter(prefix="/teachers", tags=["Teachers"])
 articles_router = APIRouter(prefix="/articles", tags=["Articles"])

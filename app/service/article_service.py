@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from src.api.dto import ArticleBase
-from src.dao.entities.article_dao import ArticleDAO
-from src.dao.models import Article
+from app.api.dto import ArticleBase
+from app.dao.entities.article_dao import ArticleDAO
+from app.dao.models import Article
 
 
 class ArticleService:

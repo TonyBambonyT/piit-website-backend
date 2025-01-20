@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from src.dao.db_config import SessionLocal
+from app.dao.db_config import SessionLocal
 
 
 def get_db() -> Session:

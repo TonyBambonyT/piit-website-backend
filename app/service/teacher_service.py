@@ -1,9 +1,9 @@
 import httpx
 from sqlalchemy.orm import Session
 
-from src.api.dto import TeacherBase
-from src.dao.entities.teacher_dao import TeacherDAO
-from src.dao.models import Teacher
+from app.api.dto import TeacherBase
+from app.dao.entities.teacher_dao import TeacherDAO
+from app.dao.models import Teacher
 
 
 class TeacherService:

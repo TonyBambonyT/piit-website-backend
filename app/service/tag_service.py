@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from src.api.dto import TagBase
-from src.dao.entities.tag_dao import TagDAO
-from src.dao.models import Tag
+from app.api.dto import TagBase
+from app.dao.entities.tag_dao import TagDAO
+from app.dao.models import Tag
 
 
 class TagService:

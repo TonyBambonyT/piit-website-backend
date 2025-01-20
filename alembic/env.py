@@ -5,9 +5,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.config.config import Settings
-from src.dao.db_config import Base
-from src.dao.models import Teacher, Article, Tag
+from app.config.config import Settings
+from app.dao.db_config import Base
+from app.dao.models import Teacher, Article, Tag
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

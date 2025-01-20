@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from src.dao.models import Teacher
+from app.dao.models import Teacher
 
 
 class TeacherDAO:

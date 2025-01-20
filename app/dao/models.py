@@ -2,7 +2,7 @@ from datetime import datetime
 import pytz as pytz
 from sqlalchemy import Column, Integer, String, Boolean, ARRAY, DateTime, TEXT, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
-from src.dao.db_config import Base
+from app.dao.db_config import Base
 
 
 class Teacher(Base):

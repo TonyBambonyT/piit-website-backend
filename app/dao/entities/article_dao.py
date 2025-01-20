@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
-from src.dao.models import Article
+from app.dao.models import Article
 
 
 class ArticleDAO:

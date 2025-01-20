@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 import uvicorn
-from src.api.routers import teachers_router, tags_router, articles_router
+from app.api.routers import teachers_router, tags_router, articles_router
 
 
 def get_app() -> FastAPI:

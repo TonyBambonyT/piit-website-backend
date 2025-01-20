@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from src.dao.models import Tag
+from app.dao.models import Tag
 
 
 class TagDAO:
