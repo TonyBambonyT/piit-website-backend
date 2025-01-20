@@ -1,11 +1,15 @@
 from fastapi import FastAPI
-from src.api.routers import router as teachers_router
+from starlette.staticfiles import StaticFiles
 import uvicorn
+from src.api.routers import teachers_router, tags_router, articles_router
 
 
 def get_app() -> FastAPI:
     app = FastAPI()
-    app.include_router(teachers_router, prefix="/teachers")
+    app.mount("/static", StaticFiles(directory="resources/static"), name="static")
+    app.include_router(teachers_router)
+    app.include_router(tags_router)
+    app.include_router(articles_router)
     return app
 
 

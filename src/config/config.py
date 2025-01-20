@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = os.getenv("POSTGRES_DB")
     POSTGRES_USER: str = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
+    BRS_URI: str = os.getenv("BRS_URI")
+    UPLOAD_DIR: str = os.getenv("UPLOAD_DIR")
 
     @property
     def database_url(self) -> str:
@@ -20,4 +22,6 @@ class Settings(BaseSettings):
 
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}" \
                f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-    
+
+
+settings = Settings()

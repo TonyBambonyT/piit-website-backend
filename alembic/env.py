@@ -7,7 +7,7 @@ from alembic import context
 
 from src.config.config import Settings
 from src.dao.db_config import Base
-from src.dao.models import Teachers
+from src.dao.models import Teacher, Article, Tag
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,6 +20,8 @@ if config.config_file_name is not None:
 
 settings = Settings()
 config.set_main_option("sqlalchemy.url", settings.database_url)
+print(f"Using database URL: {settings.database_url}")
+
 
 # Метаданные таблиц (все ваши модели должны быть зарегистрированы в Base.metadata)
 target_metadata = Base.metadata
