@@ -1,5 +1,6 @@
 import os
 import shutil
+from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Form, UploadFile
 from typing import List
@@ -106,6 +107,7 @@ def create_article(
     title: str = Form(...),
     content: str = Form(...),
     tag_id: int = Form(...),
+    event_date: date = Form(...),
     service: ArticleService = Depends(get_article_service),
 ):
     """
@@ -120,7 +122,7 @@ def create_article(
         shutil.copyfileobj(icon.file, buffer)
 
     icon_path = f"/static/icons/{filename}"
-    article_data = ArticleBase(title=title, content=content, tag_id=tag_id, icon=icon_path)
+    article_data = ArticleBase(title=title, content=content, tag_id=tag_id, icon=icon_path, event_date=event_date)
     created_article = service.create_article(article_data)
     if not created_article:
         raise HTTPException(status_code=400, detail="Article with this title already exists")

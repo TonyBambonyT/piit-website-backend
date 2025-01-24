@@ -1,5 +1,7 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy.orm import Session
-from sqlalchemy import desc
+from sqlalchemy import func, case
 from app.dao.models import Article
 
 
@@ -20,4 +22,16 @@ class ArticleDAO:
         return article
 
     def get_latest_articles(self, limit: int = 6):
-        return self.db.query(Article).order_by(desc(Article.created_at)).limit(limit).all()
+        today = (datetime.utcnow() + timedelta(hours=3)).date()
+        days_diff = func.abs(func.date(Article.event_date) - today)
+        case_order = case(
+            {
+                True: 0,
+                False: 1
+            },
+            value=(Article.event_date >= today)
+        )
+        return (self.db.query(Article)
+                .order_by(days_diff, case_order, Article.event_date)
+                .limit(limit)
+                .all())

@@ -1,6 +1,6 @@
 from datetime import datetime
 import pytz as pytz
-from sqlalchemy import Column, Integer, String, Boolean, ARRAY, DateTime, TEXT, ForeignKey, TIMESTAMP
+from sqlalchemy import Column, Integer, String, Boolean, ARRAY, DateTime, TEXT, ForeignKey, TIMESTAMP, DATE
 from sqlalchemy.orm import relationship
 from app.dao.db_config import Base
 
@@ -8,7 +8,7 @@ from app.dao.db_config import Base
 class Teacher(Base):
     __tablename__ = "teachers"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     academic_degree = Column(String, nullable=True)
     department_id = Column(Integer, nullable=False)
     department_leader = Column(Boolean, default=False)
@@ -26,19 +26,20 @@ class Teacher(Base):
 class Tag(Base):
     __tablename__ = "tags"
 
-    id = Column(Integer, primary_key=True, unique=True, nullable=False)  # Уникальный идентификатор тега
-    name = Column(String, nullable=False)  # Название тега
-    articles = relationship('Article', back_populates='tag')  # Связь со статьями (один ко многим)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    articles = relationship('Article', back_populates='tag')
 
 
 class Article(Base):
     __tablename__ = "articles"
 
-    id = Column(Integer, primary_key=True, unique=True, nullable=False)  # Уникальный идентификатор статьи
-    icon = Column(String, nullable=True)  # Иконка статьи
-    created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=lambda: datetime.now(pytz.timezone('Europe/Moscow')))  # Дата и время создания статьи
-    title = Column(String, nullable=False)  # Заголовок статьи
-    views = Column(Integer, default=0)  # Количество просмотров статьи
-    content = Column(TEXT, nullable=True)  # Содержание статьи (вложенный JSON)
-    tag_id = Column(Integer, ForeignKey('tags.id'), nullable=False)  # Внешний ключ на таблицу тегов
-    tag = relationship('Tag', back_populates='articles')  # Связь с тегом (один к одному с точки зрения статьи)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    icon = Column(String, nullable=True)
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=lambda: datetime.now(pytz.timezone('Europe/Moscow')))
+    title = Column(String, nullable=False)
+    views = Column(Integer, default=0)
+    content = Column(TEXT, nullable=True)
+    event_date = Column(DATE, nullable=False)
+    tag_id = Column(Integer, ForeignKey('tags.id'), nullable=False)
+    tag = relationship('Tag', back_populates='articles')

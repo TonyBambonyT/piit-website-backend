@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from pydantic import BaseModel
 from typing import List
 
@@ -43,6 +43,7 @@ class ArticleBase(BaseModel):
     title: str
     content: str
     tag_id: int
+    event_date: date
 
 
 class TagResponse(TagBase):
@@ -59,6 +60,7 @@ class ArticleResponse(ArticleBase):
     id: int
     created_at: datetime
     views: int
+    event_date: date
 
 
 class ArticleLatestResponse(BaseModel):
@@ -69,4 +71,5 @@ class ArticleLatestResponse(BaseModel):
     icon: str
     title: str
     created_at: datetime
+    event_date: date
 
