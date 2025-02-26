@@ -1,3 +1,4 @@
+from sqlalchemy import case, asc
 from sqlalchemy.orm import Session
 from app.dao.models import Teacher
 
@@ -7,7 +8,13 @@ class TeacherDAO:
         self.db = db
 
     def get_all_teachers(self):
-        return self.db.query(Teacher).all()
+        return self.db.query(Teacher).filter(Teacher.rank_short != "магистр").order_by(
+            case(
+                (Teacher.surname == "Махортов", 0),
+                else_=1
+            ),
+            asc(Teacher.surname)
+        ).all()
 
     def get_teacher_by_id(self, teacher_id: int):
         return self.db.query(Teacher).filter(Teacher.id == teacher_id).first()
