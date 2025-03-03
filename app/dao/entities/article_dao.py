@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
-
-from sqlalchemy.orm import Session
-from sqlalchemy import func, case
-from app.dao.models import Article
+from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import func, case, extract
+from app.dao.models import Article, Tag
 
 
 class ArticleDAO:
@@ -35,3 +34,21 @@ class ArticleDAO:
                 .order_by(days_diff, case_order, Article.event_date)
                 .limit(limit)
                 .all())
+
+    def get_filtered_articles(
+            self,
+            year: int | None,
+            month: int | None,
+            tags: list[str] | None,
+            page: int,
+            limit: int
+    ):
+        query = self.db.query(Article).join(Tag).options(joinedload(Article.tag))
+        if year:
+            query = query.filter(extract("year", Article.created_at) == year)
+        if month:
+            query = query.filter(extract("month", Article.created_at) == month)
+        if tags:
+            query = query.filter(Tag.name.in_(tags))
+        query = query.order_by(Article.created_at.desc()).offset((page - 1) * limit).limit(limit)
+        return query.all()
