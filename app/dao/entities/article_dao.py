@@ -48,10 +48,10 @@ class ArticleDAO:
     ):
         query = self.db.query(Article).join(Tag).options(joinedload(Article.tag))
         if year:
-            query = query.filter(extract("year", Article.created_at) == year)
+            query = query.filter(extract("year", Article.event_date) == year)
         if month:
-            query = query.filter(extract("month", Article.created_at) == month)
+            query = query.filter(extract("month", Article.event_date) == month)
         if tags:
             query = query.filter(Tag.name.in_(tags))
-        query = query.order_by(Article.created_at.desc()).offset((page - 1) * limit).limit(limit)
+        query = query.order_by(Article.event_date.desc()).offset((page - 1) * limit).limit(limit)
         return query.all()
