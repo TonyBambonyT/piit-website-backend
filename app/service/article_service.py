@@ -18,6 +18,9 @@ class ArticleService:
     def get_latest_articles(self, limit: int = 6):
         return self.dao.get_latest_articles(limit)
 
+    def get_article_by_id(self, article_id: int):
+        return self.dao.get_article_by_id(article_id)
+
     def get_filtered_articles(
             self, year: int | None,
             month: int | None,

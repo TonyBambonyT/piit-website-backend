@@ -157,6 +157,27 @@ def get_all_articles(
     return articles
 
 
+@articles_router.get(
+    "/{article_id}",
+    response_model=ArticleResponse,
+    responses={
+        200: {"description": "Успешный ответ. Возвращает статью."},
+        404: {"description": "Статья не найдена."}
+    },
+)
+def get_article_by_id(
+    article_id: int = Path(..., title="ID статьи", description="Уникальный id"),
+    service: ArticleService = Depends(get_article_service),
+):
+    """
+    Возвращает статью по переданному id.
+    """
+    article = service.get_article_by_id(article_id)
+    if not article:
+        raise HTTPException(status_code=404, detail="No articles found")
+    return article
+
+
 @articles_router.post(
     "/",
     response_model=ArticleResponse,

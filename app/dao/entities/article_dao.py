@@ -14,6 +14,9 @@ class ArticleDAO:
     def get_article_by_title(self, title: str):
         return self.db.query(Article).filter(Article.title == title).first()
 
+    def get_article_by_id(self, article_id: int):
+        return self.db.query(Article).filter(Article.id == article_id).first()
+
     def create_article(self, article: Article):
         self.db.add(article)
         self.db.commit()
