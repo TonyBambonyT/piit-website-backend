@@ -42,8 +42,8 @@ def get_all_teachers(service: TeacherService = Depends(get_teacher_service)):
     },
 )
 def get_teacher_by_id(
-    teacher_id: int = Path(..., title="ID учителя", description="Уникальный id"),
-    service: TeacherService = Depends(get_teacher_service),
+        teacher_id: int = Path(..., title="ID учителя", description="Уникальный id"),
+        service: TeacherService = Depends(get_teacher_service),
 ):
     """
     Возвращает информацию о преподавателе по указанному id.
@@ -138,12 +138,12 @@ def create_tag(tag: TagBase, service: TagService = Depends(get_tag_service)):
     },
 )
 def get_all_articles(
-    year: int | None = Query(None, description="Фильтр по году"),
-    month: int | None = Query(None, description="Фильтр по месяцу"),
-    tags: list[str] | None = Query(None, description="Фильтр по тегам"),
-    page: int = Query(1, description="Номер страницы"),
-    limit: int = Query(12, description="Количество новостей на страницу"),
-    service: ArticleService = Depends(get_article_service),
+        year: int | None = Query(None, description="Фильтр по году"),
+        month: int | None = Query(None, description="Фильтр по месяцу"),
+        tags: list[str] | None = Query(None, description="Фильтр по тегам"),
+        page: int = Query(1, description="Номер страницы"),
+        limit: int = Query(12, description="Количество новостей на страницу"),
+        service: ArticleService = Depends(get_article_service),
 ):
     """
     Возвращает список всех статей с возможностью фильтрации по году, месяцу и тегам.
@@ -158,6 +158,24 @@ def get_all_articles(
 
 
 @articles_router.get(
+    "/latest",
+    response_model=list[ArticleLatestResponse],
+    responses={
+        200: {"description": "Успешный ответ. Возвращает 6 последних статей."},
+        404: {"description": "Нет статей."},
+    },
+)
+def get_latest_articles(service: ArticleService = Depends(get_article_service)):
+    """
+    Возвращает 6 последних статей, отсортированных по дате создания от новых к старым.
+    """
+    articles = service.get_latest_articles()
+    if not articles:
+        raise HTTPException(status_code=404, detail="No articles found")
+    return articles
+
+
+@articles_router.get(
     "/{article_id}",
     response_model=ArticleResponse,
     responses={
@@ -166,8 +184,8 @@ def get_all_articles(
     },
 )
 def get_article_by_id(
-    article_id: int = Path(..., title="ID статьи", description="Уникальный id"),
-    service: ArticleService = Depends(get_article_service),
+        article_id: int = Path(..., title="ID статьи", description="Уникальный id"),
+        service: ArticleService = Depends(get_article_service),
 ):
     """
     Возвращает статью по переданному id.
@@ -187,12 +205,12 @@ def get_article_by_id(
     },
 )
 def create_article(
-    icon: UploadFile,
-    title: str = Form(...),
-    content: str = Form(...),
-    tag_id: int = Form(...),
-    event_date: date = Form(...),
-    service: ArticleService = Depends(get_article_service),
+        icon: UploadFile,
+        title: str = Form(...),
+        content: str = Form(...),
+        tag_id: int = Form(...),
+        event_date: date = Form(...),
+        service: ArticleService = Depends(get_article_service),
 ):
     """
     Создает новую статью.
@@ -211,21 +229,3 @@ def create_article(
     if not created_article:
         raise HTTPException(status_code=400, detail="Article with this title already exists")
     return created_article
-
-
-@articles_router.get(
-    "/latest",
-    response_model=list[ArticleLatestResponse],
-    responses={
-        200: {"description": "Успешный ответ. Возвращает 6 последних статей."},
-        404: {"description": "Нет статей."},
-    },
-)
-def get_latest_articles(service: ArticleService = Depends(get_article_service)):
-    """
-    Возвращает 6 последних статей, отсортированных по дате создания от новых к старым.
-    """
-    articles = service.get_latest_articles()
-    if not articles:
-        raise HTTPException(status_code=404, detail="No articles found")
-    return articles
