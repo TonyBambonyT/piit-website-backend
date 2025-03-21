@@ -133,8 +133,7 @@ def create_tag(tag: TagBase, service: TagService = Depends(get_tag_service)):
     response_model=list[ArticleResponse],
     responses={
         200: {"description": "Успешный ответ. Возвращает список статей."},
-        400: {"description": "Ошибка валидации. Например, если указан месяц без года."},
-        404: {"description": "Статьи не найдены."}
+        400: {"description": "Ошибка валидации. Например, если указан месяц без года."}
     },
 )
 def get_all_articles(
@@ -153,7 +152,7 @@ def get_all_articles(
         raise HTTPException(status_code=400, detail="Фильтрация по месяцу доступна только при указании года.")
     articles = service.get_filtered_articles(year, month, tags, page, limit)
     if not articles:
-        raise HTTPException(status_code=404, detail="No articles found")
+        return []
     return articles
 
 
@@ -161,8 +160,7 @@ def get_all_articles(
     "/latest",
     response_model=list[ArticleLatestResponse],
     responses={
-        200: {"description": "Успешный ответ. Возвращает 6 последних статей."},
-        404: {"description": "Нет статей."},
+        200: {"description": "Успешный ответ. Возвращает 6 последних статей."}
     },
 )
 def get_latest_articles(service: ArticleService = Depends(get_article_service)):
@@ -171,7 +169,7 @@ def get_latest_articles(service: ArticleService = Depends(get_article_service)):
     """
     articles = service.get_latest_articles()
     if not articles:
-        raise HTTPException(status_code=404, detail="No articles found")
+        return []
     return articles
 
 
