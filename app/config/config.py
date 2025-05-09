@@ -12,8 +12,12 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = os.getenv("POSTGRES_DB")
     POSTGRES_USER: str = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
-    BRS_URI: str = os.getenv("BRS_URI")
+    TEACHERS_URI: str = os.getenv("TEACHERS_URI")
     UPLOAD_DIR: str = os.getenv("UPLOAD_DIR")
+    CUR_UNITS_URI: str = os.getenv("CUR_UNITS_URI")
+    SUBJECTS_URI: str = os.getenv("SUBJECTS_URI")
+    STUB_GROUPS_URI: str = os.getenv("STUB_GROUPS_URI")
+    SECRET_KEY: str = os.getenv("SECRET_KEY")
 
     @property
     def database_url(self) -> str:

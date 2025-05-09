@@ -38,16 +38,20 @@ class TeacherService:
         except Exception as e:
             raise RuntimeError(f"Error fetching teachers from API: {e}")
 
-    def synchronize_teachers(self, teachers: list[dict]):
+    def synchronize_teachers(self, teachers: list[dict], commit: bool = True):
         """
         Синхронизирует базу данных с данными из API.
         """
         for teacher_data in teachers:
-            teacher_data.pop("id", None)
+            teacher_data["brs_id"] = teacher_data.pop("id", None)
             existing_teacher = self.dao.get_teacher_by_person_id(teacher_data["person_id"])
             if existing_teacher:
                 self.dao.update_teacher(existing_teacher, teacher_data)
             else:
                 new_teacher = Teacher(**teacher_data)
                 self.dao.add_teacher(new_teacher)
-        self.dao.save_changes()
+        if commit:
+            self.dao.save_changes()
+
+    def get_teachers_by_subject_id(self, subject_brs_id: int):
+        return self.dao.get_teachers_by_subject_id(subject_brs_id)

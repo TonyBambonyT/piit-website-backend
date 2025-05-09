@@ -55,3 +55,13 @@ class ArticleDAO:
             query = query.filter(Tag.name.in_(tags))
         query = query.order_by(Article.event_date.desc()).offset((page - 1) * limit).limit(limit)
         return query.all()
+
+    def update_article(self, article: Article):
+        self.db.add(article)
+        self.db.commit()
+        self.db.refresh(article)
+        return article
+
+    def delete_article(self, article: Article):
+        self.db.delete(article)
+        self.db.commit()

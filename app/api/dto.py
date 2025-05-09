@@ -19,6 +19,7 @@ class TeacherBase(BaseModel):
     rank: str
     rank_short: str | None = None
     surname: str
+    brs_id: int
 
 
 class TeacherResponse(TeacherBase):
@@ -73,3 +74,47 @@ class ArticleLatestResponse(BaseModel):
     created_at: datetime
     event_date: date
 
+
+class CurriculumUnitResponse(BaseModel):
+    id: int
+    practice_teacher_brs_ids: list[int]
+    stud_group_brs_id: int
+    teacher_brs_id: int
+    subject_brs_id: int
+    brs_id: int
+
+
+class SubjectResponse(BaseModel):
+    id: int
+    brs_id: int
+    name: str
+
+
+class StudGroupResponse(BaseModel):
+    id: int
+    brs_id: int
+    course: int
+    semester: int
+    education_level: str
+
+
+class CurriculumUnitFullResponse(BaseModel):
+    id: int
+    brs_id: int
+    practice_teachers: list[TeacherResponse]
+    teacher: TeacherResponse
+    subject: SubjectResponse
+    stud_group: StudGroupResponse
+
+
+class TeacherWithPracticeResponse(TeacherResponse):
+    is_practice: bool
+
+
+class SubjectWithPracticeResponse(SubjectResponse):
+    is_practice: bool
+
+
+class AdminRegisterRequest(BaseModel):
+    username: str
+    password: str
