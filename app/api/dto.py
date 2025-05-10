@@ -43,7 +43,7 @@ class ArticleBase(BaseModel):
     icon: str
     title: str
     content: str
-    tag_id: int
+    tag_ids: list[int]
     event_date: date
 
 

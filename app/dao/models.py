@@ -31,7 +31,12 @@ class Tag(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
-    articles = relationship('Article', back_populates='tag')
+    article_associations = relationship(
+        "ArticleTagAssociation", back_populates="tag", cascade="all, delete-orphan"
+    )
+    articles = relationship(
+        "Article", secondary="article_tag_association", back_populates="tags"
+    )
 
 
 class Article(Base):
@@ -45,8 +50,22 @@ class Article(Base):
     views = Column(Integer, default=0)
     content = Column(TEXT, nullable=True)
     event_date = Column(DATE, nullable=False)
-    tag_id = Column(Integer, ForeignKey('tags.id'), nullable=False)
-    tag = relationship('Tag', back_populates='articles')
+    tag_associations = relationship(
+        "ArticleTagAssociation", back_populates="article", cascade="all, delete-orphan"
+    )
+    tags = relationship(
+        "Tag", secondary="article_tag_association", back_populates="articles"
+    )
+
+
+class ArticleTagAssociation(Base):
+    __tablename__ = "article_tag_association"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    article_id = Column(Integer, ForeignKey("articles.id"))
+    tag_id = Column(Integer, ForeignKey("tags.id"))
+
+    article = relationship("Article", back_populates="tag_associations")
+    tag = relationship("Tag", back_populates="article_associations")
 
 
 class CurriculumUnit(Base):

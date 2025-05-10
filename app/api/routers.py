@@ -172,22 +172,18 @@ def create_tag(tag: TagBase, service: TagService = Depends(get_tag_service)):
     },
 )
 def get_all_articles(
-        year: int | None = Query(None, description="Фильтр по году"),
-        month: int | None = Query(None, description="Фильтр по месяцу"),
+        year_min: int | None = Query(None, description="Год с..."),
+        year_max: int | None = Query(None, description="Год по..."),
+        month_min: int | None = Query(None, description="Месяц с..."),
+        month_max: int | None = Query(None, description="Месяц по..."),
         tags: list[str] | None = Query(None, description="Фильтр по тегам"),
         page: int = Query(1, description="Номер страницы"),
         limit: int = Query(12, description="Количество новостей на страницу"),
         service: ArticleService = Depends(get_article_service),
 ):
-    """
-    Возвращает список всех статей с возможностью фильтрации по году, месяцу и тегам.
-    Поддерживает пагинацию (по 12 новостей на страницу).
-    """
-    if month and not year:
-        raise HTTPException(status_code=400, detail="Фильтрация по месяцу доступна только при указании года.")
-    articles = service.get_filtered_articles(year, month, tags, page, limit)
-    if not articles:
-        return []
+    if (month_min or month_max) and not (year_min or year_max):
+        raise HTTPException(status_code=400, detail="Фильтрация по месяцу возможна только при указании диапазона годов.")
+    articles = service.get_filtered_articles(year_min, year_max, month_min, month_max, tags, page, limit)
     return articles
 
 
@@ -239,23 +235,26 @@ def get_article_by_id(
     },
 )
 def create_article(
-        icon: UploadFile,
+        icon: UploadFile | None = File(None),
         title: str = Form(...),
         content: str = Form(...),
-        tag_id: int = Form(...),
+        tag_ids: list[int] = Form(...),
         event_date: date = Form(...),
         service: ArticleService = Depends(get_article_service),
 ):
     """
     Создает новую статью.
     """
-    if not icon.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Invalid file type. Expected an image.")
-    try:
-        icon_path = save_icon_file(icon, prefix=title)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    article_data = ArticleBase(title=title, content=content, tag_id=tag_id, icon=icon_path, event_date=event_date)
+    if icon:
+        if not icon.content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="Invalid file type. Expected an image.")
+        try:
+            icon_path = save_icon_file(icon, prefix=title)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+    else:
+        icon_path = settings.DEFAULT_ARTICLE_ICON  # например: "/static/icons/default_article.png"
+    article_data = ArticleBase(title=title, content=content, tag_ids=tag_ids, icon=icon_path, event_date=event_date)
     created_article = service.create_article(article_data)
     if not created_article:
         raise HTTPException(status_code=400, detail="Article with this title already exists")
@@ -276,20 +275,19 @@ def update_article(
     icon: UploadFile = File(None),
     title: str | None = Form(None),
     content: str | None = Form(None),
-    tag_id: str | None = Form(None),
+    tag_ids: list[int] = Form(None),
     event_date: str | None = Form(None),
     service: ArticleService = Depends(get_article_service)
 ):
     """
     Обновляет статью по ID. Все поля опциональны.
     """
-    print(tag_id)
     updated = service.update_article_with_optional_fields(
         article_id=article_id,
         icon=icon,
         title=title,
         content=content,
-        tag_id=tag_id,
+        tag_ids=tag_ids,
         event_date=event_date,
     )
     if not updated:
