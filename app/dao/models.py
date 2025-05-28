@@ -9,6 +9,7 @@ class Teacher(Base):
     __tablename__ = "teachers"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    icon = Column(String, nullable=True)
     academic_degree = Column(String, nullable=True)
     department_id = Column(Integer, nullable=False)
     department_leader = Column(Boolean, default=False)

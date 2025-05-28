@@ -11,6 +11,16 @@ class SubjectService:
     def get_all_subjects(self):
         return self.dao.get_all_subjects()
 
+    @staticmethod
+    def fetch_subjects(url: str) -> list[dict]:
+        try:
+            response = httpx.get(url)
+            response.raise_for_status()
+            data = response.json()
+            return data.get("subjects", [])
+        except Exception as e:
+            raise RuntimeError(f"Error fetching subjects from API: {e}")
+
     def create_subjects(self, url: str, commit: bool = True):
         try:
             response = httpx.get(url)

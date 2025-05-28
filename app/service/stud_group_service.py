@@ -1,6 +1,6 @@
 from app.dao.entities.stud_group_dao import StudGroupDAO
 from app.dao.models import StudGroup
-from app.service.common.utils import fetch_data_until_found
+from app.service.common.utils import fetch_data_until_found, collect_data_until_found
 
 
 class StudGroupService:
@@ -9,6 +9,10 @@ class StudGroupService:
 
     def get_all_stud_groups(self):
         return self.dao.get_all_stud_groups()
+
+    @staticmethod
+    def fetch_groups(url_template: str) -> list[dict]:
+        return collect_data_until_found(url_template, lambda d: d.get("stud_groups", []))
 
     def create_stud_groups(self, url_template, commit: bool = True):
         fetch_data_until_found(

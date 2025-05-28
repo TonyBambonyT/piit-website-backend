@@ -82,3 +82,9 @@ class TeacherDAO:
             )
             for teacher, is_practice in results
         ]
+
+    def update_teacher_icon(self, teacher_id: int, icon_path: str) -> None:
+        teacher = self.db.query(Teacher).filter(Teacher.id == teacher_id).first()
+        if teacher:
+            teacher.icon = icon_path
+            self.db.commit()

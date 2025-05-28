@@ -76,8 +76,8 @@ def get_teacher_by_id(
     },
 )
 def get_teacher_subjects(
-    teacher_id: int,
-    service: SubjectService = Depends(get_subject_service),
+        teacher_id: int,
+        service: SubjectService = Depends(get_subject_service),
 ):
     """
     Возвращает список предметов, которые преподает указанный пропадаватель (по его ID)
@@ -104,6 +104,36 @@ def create_teacher(teacher: TeacherBase, service: TeacherService = Depends(get_t
     if not created_teacher:
         raise HTTPException(status_code=400, detail="Teacher with this person_id already exists")
     return created_teacher
+
+
+@teachers_router.post(
+    "/{teacher_id}/icon",
+    dependencies=[Depends(admin_required)],
+    responses={
+        200: {"description": "Иконка успешно загружена."},
+        400: {"description": "Неверный тип файла."},
+        404: {"description": "Преподаватель не найден."},
+    },
+)
+def upload_teacher_icon(
+        teacher_id: int = Path(..., title="ID преподавателя"),
+        icon: UploadFile = File(...),
+        service: TeacherService = Depends(get_teacher_service),
+):
+    """
+    Загружает иконку преподавателю по его ID.
+    """
+    if not icon.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Invalid file type. Expected an image.")
+    teacher = service.get_teacher_by_id(teacher_id)
+    if not teacher:
+        raise HTTPException(status_code=404, detail=f"Teacher with ID {teacher_id} not found")
+    try:
+        icon_path = save_icon_file(icon, prefix=f"teacher_{teacher_id}")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    service.update_teacher_icon(teacher_id, icon_path)
+    return {"message": "Icon uploaded successfully", "icon_path": icon_path}
 
 
 @sync_router.post(
@@ -182,7 +212,8 @@ def get_all_articles(
         service: ArticleService = Depends(get_article_service),
 ):
     if (month_min or month_max) and not (year_min or year_max):
-        raise HTTPException(status_code=400, detail="Фильтрация по месяцу возможна только при указании диапазона годов.")
+        raise HTTPException(status_code=400,
+                            detail="Фильтрация по месяцу возможна только при указании диапазона годов.")
     articles = service.get_filtered_articles(year_min, year_max, month_min, month_max, tags, page, limit)
     return articles
 
@@ -271,13 +302,13 @@ def create_article(
     },
 )
 def update_article(
-    article_id: int,
-    icon: UploadFile = File(None),
-    title: str | None = Form(None),
-    content: str | None = Form(None),
-    tag_ids: list[int] = Form(None),
-    event_date: str | None = Form(None),
-    service: ArticleService = Depends(get_article_service)
+        article_id: int,
+        icon: UploadFile = File(None),
+        title: str | None = Form(None),
+        content: str | None = Form(None),
+        tag_ids: list[int] = Form(None),
+        event_date: str | None = Form(None),
+        service: ArticleService = Depends(get_article_service)
 ):
     """
     Обновляет статью по ID. Все поля опциональны.
@@ -305,8 +336,8 @@ def update_article(
     },
 )
 def delete_article(
-    article_id: int,
-    service: ArticleService = Depends(get_article_service)
+        article_id: int,
+        service: ArticleService = Depends(get_article_service)
 ):
     """
     Удаляет статью по id.
@@ -401,8 +432,8 @@ def update_subjects(service: SubjectService = Depends(get_subject_service)):
     },
 )
 def get_teachers_by_subject(
-    subject_id: int,
-    service: TeacherService = Depends(get_teacher_service)
+        subject_id: int,
+        service: TeacherService = Depends(get_teacher_service)
 ):
     """
     Возвращает список преподавателей, преподающих указанный предмет.
@@ -492,8 +523,8 @@ def get_all_full_curriculum_units(service: CurriculumUnitService = Depends(get_c
     },
 )
 def get_curriculum_unit_by_brs_id(
-    brs_id: int,
-    service: CurriculumUnitService = Depends(get_curriculum_unit_service)
+        brs_id: int,
+        service: CurriculumUnitService = Depends(get_curriculum_unit_service)
 ):
     """
     Получает одну учебную единицу по её BRS ID.
@@ -513,8 +544,8 @@ def get_curriculum_unit_by_brs_id(
     },
 )
 def get_full_curriculum_unit_by_id(
-    id: int,
-    service: CurriculumUnitService = Depends(get_curriculum_unit_service)
+        id: int,
+        service: CurriculumUnitService = Depends(get_curriculum_unit_service)
 ):
     """
     Получает одну учебную единицу с полной информацией по её ID в нашей базе.
@@ -534,8 +565,8 @@ def get_full_curriculum_unit_by_id(
     },
 )
 def get_full_curriculum_unit_by_brs_id(
-    brs_id: int,
-    service: CurriculumUnitService = Depends(get_curriculum_unit_service)
+        brs_id: int,
+        service: CurriculumUnitService = Depends(get_curriculum_unit_service)
 ):
     """
     Получает одну учебную единицу с полной информацией по её BRS ID.
@@ -556,8 +587,8 @@ def get_full_curriculum_unit_by_brs_id(
     }
 )
 def register_admin(
-    request: AdminRegisterRequest,
-    service: AdminUserService = Depends(get_admin_user_service)
+        request: AdminRegisterRequest,
+        service: AdminUserService = Depends(get_admin_user_service)
 ):
     try:
         user = service.register_admin(request)
@@ -577,8 +608,8 @@ def register_admin(
     }
 )
 def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    service: AdminUserService = Depends(get_admin_user_service)
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        service: AdminUserService = Depends(get_admin_user_service)
 ):
     user = service.validate_credentials(form_data.username, form_data.password)
     if not user:

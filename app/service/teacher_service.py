@@ -23,7 +23,8 @@ class TeacherService:
         new_teacher = Teacher(**teacher.dict())
         return self.dao.create_teacher(new_teacher)
 
-    def fetch_teachers_from_api(self, url: str):
+    @staticmethod
+    def fetch_teachers_from_api(url: str):
         """
         Загружает данные учителей из внешнего API.
         """
@@ -55,3 +56,6 @@ class TeacherService:
 
     def get_teachers_by_subject_id(self, subject_brs_id: int):
         return self.dao.get_teachers_by_subject_id(subject_brs_id)
+
+    def update_teacher_icon(self, teacher_id: int, icon_path: str) -> None:
+        return self.dao.update_teacher_icon(teacher_id, icon_path)

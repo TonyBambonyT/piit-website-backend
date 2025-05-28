@@ -27,6 +27,7 @@ class TeacherResponse(TeacherBase):
     DTO для ответа с данными учителя (GET-запросы).
     """
     id: int
+    icon: str
 
 
 class TagBase(BaseModel):

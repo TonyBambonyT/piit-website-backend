@@ -1,6 +1,6 @@
 from app.dao.entities.cur_unit_dao import CurriculumUnitDAO
 from app.dao.models import CurriculumUnit
-from app.service.common.utils import fetch_data_until_found
+from app.service.common.utils import fetch_data_until_found, collect_data_until_found
 
 
 class CurriculumUnitService:
@@ -12,6 +12,10 @@ class CurriculumUnitService:
 
     def get_curriculum_unit_by_brs_id(self, brs_id):
         return self.dao.get_cur_unit_by_brs_id(brs_id)
+
+    @staticmethod
+    def fetch_units(url_template: str) -> list[dict]:
+        return collect_data_until_found(url_template, lambda d: d.get("curriculum_units", []))
 
     def create_curriculum_units(self, url_template, commit: bool = True):
         fetch_data_until_found(

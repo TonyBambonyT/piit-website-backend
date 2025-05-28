@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     STUB_GROUPS_URI: str = os.getenv("STUB_GROUPS_URI")
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     DEFAULT_ARTICLE_ICON: str = os.getenv("DEFAULT_ARTICLE_ICON")
+    DEFAULT_MAN_ICON: str = os.getenv("DEFAULT_MAN_ICON")
+    DEFAULT_WOMAN_ICON: str = os.getenv("DEFAULT_WOMAN_ICON")
 
     @property
     def database_url(self) -> str:
