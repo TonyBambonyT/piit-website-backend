@@ -50,12 +50,26 @@ class DataSyncManager:
         }
         new_ids = set()
 
+        FIELD_RENAMES = {
+            CurriculumUnit: {
+                "practice_teacher_ids": "practice_teacher_brs_ids",
+                "stud_group_id": "stud_group_brs_id",
+                "subject_id": "subject_brs_id",
+                "teacher_id": "teacher_brs_id",
+            }
+        }
+        model_columns = {col.name for col in model.__table__.columns}
+
         for item in new_data:
             brs_id = item.get("id")
             new_ids.add(brs_id)
             obj = existing.get(brs_id)
             item["brs_id"] = item.pop("id")
 
+            for old_key, new_key in FIELD_RENAMES.get(model, {}).items():
+                if old_key in item:
+                    item[new_key] = item.pop(old_key)
+            item = {key: value for key, value in item.items() if key in model_columns}
             if obj:
                 for key, value in item.items():
                     if model is Teacher and key == "icon":
