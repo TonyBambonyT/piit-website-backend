@@ -83,6 +83,7 @@ class CurriculumUnitResponse(BaseModel):
     teacher_brs_id: int
     subject_brs_id: int
     brs_id: int
+    mark_type: str
 
 
 class SubjectResponse(BaseModel):
@@ -103,6 +104,7 @@ class CurriculumUnitFullResponse(BaseModel):
     id: int
     brs_id: int
     practice_teachers: list[TeacherResponse]
+    mark_type: str
     teacher: TeacherResponse
     subject: SubjectResponse
     stud_group: StudGroupResponse

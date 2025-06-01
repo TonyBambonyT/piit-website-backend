@@ -75,6 +75,7 @@ class CurriculumUnit(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     brs_id = Column(Integer, nullable=False, unique=True)
     practice_teacher_brs_ids = Column(ARRAY(Integer), nullable=False, default=[])
+    mark_type = Column(String, nullable=False)
     stud_group_brs_id = Column(Integer, ForeignKey('stud_groups.brs_id'), nullable=False)
     teacher_brs_id = Column(Integer, ForeignKey('teachers.brs_id'), nullable=False)
     subject_brs_id = Column(Integer, ForeignKey('subjects.brs_id'), nullable=False)
