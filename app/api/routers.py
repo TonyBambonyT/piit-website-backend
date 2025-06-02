@@ -515,6 +515,18 @@ def get_all_full_curriculum_units(service: CurriculumUnitService = Depends(get_c
 
 
 @cur_units_router.get(
+    "/full/aggregated",
+    response_model=list[CurriculumUnitFullResponse],
+    responses={200: {"description": "Список всех учебных единиц с полной информацией без дубликатов."}},
+)
+def get_all_full_curriculum_units_aggregated(service: CurriculumUnitService = Depends(get_curriculum_unit_service)):
+    """
+    Возвращает список всех учебных единиц с полной информацией, не дублируя.
+    """
+    return service.get_all_full_curriculum_units_aggregated()
+
+
+@cur_units_router.get(
     "/brs/{brs_id}",
     response_model=CurriculumUnitResponse,
     responses={

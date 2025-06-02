@@ -63,3 +63,41 @@ class CurriculumUnitDAO:
                 if tid in teacher_map
             ]
         return units
+
+    def get_all_cur_units_full_info_aggregated(self):
+        units = self.db.query(CurriculumUnit).all()
+        teacher_map = {t.brs_id: t for t in self.db.query(Teacher).all()}
+        subject_map = {s.brs_id: s for s in self.db.query(Subject).all()}
+        group_map = {g.brs_id: g for g in self.db.query(StudGroup).all()}
+        for unit in units:
+            unit.teacher = teacher_map.get(unit.teacher_brs_id)
+            unit.subject = subject_map.get(unit.subject_brs_id)
+            unit.stud_group = group_map.get(unit.stud_group_brs_id)
+        aggregated = {}
+        for unit in units:
+            group = unit.stud_group
+            if not group:
+                continue
+            key = (
+                unit.subject_brs_id,
+                group.course,
+                group.semester,
+                group.education_level,
+            )
+            if key not in aggregated:
+                unit.practice_teachers = [
+                    teacher_map[tid]
+                    for tid in unit.practice_teacher_brs_ids
+                    if tid in teacher_map
+                ]
+                aggregated[key] = unit
+            else:
+                existing = aggregated[key]
+                combined_ids = set(existing.practice_teacher_brs_ids or []) | set(unit.practice_teacher_brs_ids or [])
+                existing.practice_teacher_brs_ids = list(combined_ids)
+                existing.practice_teachers = [
+                    teacher_map[tid]
+                    for tid in existing.practice_teacher_brs_ids
+                    if tid in teacher_map
+                ]
+        return list(aggregated.values())

@@ -58,3 +58,6 @@ class CurriculumUnitService:
 
     def get_all_full_curriculum_units(self):
         return self.dao.get_all_cur_units_full_info()
+
+    def get_all_full_curriculum_units_aggregated(self):
+        return self.dao.get_all_cur_units_full_info_aggregated()
